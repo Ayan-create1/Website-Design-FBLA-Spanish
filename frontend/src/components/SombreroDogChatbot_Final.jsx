@@ -11,7 +11,7 @@ const SombreroDogChatbot = () => {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: '¡Hola! Me llamo Karlido. I can help answer your Spanish questions. What would you like to know?',
+      content: '¡Hola! Me llamo Carlito. I can help answer your Spanish questions. What would you like to know?',
     },
   ]);
 

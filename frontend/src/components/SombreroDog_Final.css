@@ -86,7 +86,7 @@
 
 /* Header */
 .chatbot-header {
-  background: linear-gradient(135deg, #eea45a 0%, #ee5a6f 100%);
+  background: linear-gradient(135deg, #eea45a 40%, #ee5a6f 100%);
   color: white;
   padding: 20px;
   display: flex;

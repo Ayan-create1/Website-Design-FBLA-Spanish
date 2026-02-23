@@ -2,15 +2,22 @@ import React, { useState, useRef, useEffect } from 'react';
 import './SombreroDog_Final.css';
 import dogImage from '../assets/sombrero-dog.png';
 
+//SombreroDogChatbot is our method
 const SombreroDogChatbot = () => {
+  //isOpen --> checking if the button for chat is clicked
   const [isOpen, setIsOpen] = useState(false);
+  //messages --> updating the messages within the chat, setting first chat message
+
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
       content: '¡Hola! Me llamo Karlido. I can help answer your Spanish questions. What would you like to know?',
     },
   ]);
+
   const [inputValue, setInputValue] = useState('');
+
+  //displays loading animation
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
@@ -26,7 +33,7 @@ const SombreroDogChatbot = () => {
   const SYSTEM_PROMPT = `You are a helpful Spanish learning assistant for a Spanish learning website. You have two main roles:
 
 1. WEBSITE NAVIGATION GUIDE:
-Help users navigate and use the website. Here's what the website offers:
+Your name is Carlito! Help users navigate and use the website. Here's what the website offers:
 
 PAGES:
 - About Me Page: Introduction to the website and its purpose. Has a scrolling carousel format.
@@ -91,26 +98,7 @@ Be friendly, encouraging, and use some Spanish phrases naturally. Keep responses
         }),
       });
 
-      /* 
-      // Option 2: Direct OpenAI API call (not recommended for production)
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer YOUR_OPENAI_API_KEY`,
-        },
-        body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
-          messages: [
-            { role: 'system', content: SYSTEM_PROMPT },
-            ...messages.map(msg => ({ role: msg.role, content: msg.content })),
-            { role: 'user', content: userMessage },
-          ],
-          max_tokens: 200,
-          temperature: 0.7,
-        }),
-      });
-      */
+      //Option 2
 
       const data = await response.json();
       const assistantMessage = data.choices[0].message.content;
@@ -170,12 +158,14 @@ Be friendly, encouraging, and use some Spanish phrases naturally. Keep responses
         <div className="chatbot-window">
           <div className="chatbot-header">
             <div className="header-content">
-              <img 
-                src={dogImage} 
-                alt="Dog" 
-                className="dog-avatar-small"
-              />
-              <h3>Chat with Karlido</h3>
+              <div className="dog-avatar-small">
+                <img 
+                  src={dogImage} 
+                  alt="Dog" 
+                  className="dog-avatar-small-img"
+                />
+              </div>
+              <h3>Chat with Carlito</h3>
             </div>
             <button
               className="close-btn"
@@ -267,3 +257,24 @@ Be friendly, encouraging, and use some Spanish phrases naturally. Keep responses
 };
 
 export default SombreroDogChatbot;
+
+/* 
+      // Option 2: Direct OpenAI API call (not recommended for production)
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer YOUR_OPENAI_API_KEY`,
+        },
+        body: JSON.stringify({
+          model: 'gpt-3.5-turbo',
+          messages: [
+            { role: 'system', content: SYSTEM_PROMPT },
+            ...messages.map(msg => ({ role: msg.role, content: msg.content })),
+            { role: 'user', content: userMessage },
+          ],
+          max_tokens: 200,
+          temperature: 0.7,
+        }),
+      });
+      */

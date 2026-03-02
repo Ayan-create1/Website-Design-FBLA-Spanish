@@ -19,6 +19,7 @@
     right: 0; 
     padding-right: 2rem;
     padding-left: 2rem; 
+    z-index: 1000;
   }
   
   .navbar-left .logo {
@@ -82,7 +83,7 @@
   border: none;
   color: #fff;
   cursor: pointer;
-  z-index: 50;
+  z-index: 300;
 }
 
 /* Mobile menu hidden by default */
@@ -94,7 +95,7 @@
   inset: 0;
   background-color: rgba(185, 117, 75, 0.97);
   backdrop-filter: blur(8px);
-  z-index: 40;
+  z-index: 2000;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -140,12 +141,14 @@
 
   .hamburger {
     display: block;
+    z-index: 3000;
   }
 
   .mobile-menu {
     display: flex;
     opacity: 0;
     pointer-events: none;
+    z-index: 2000;
   }
 
   .mobile-menu.open {

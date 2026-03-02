@@ -149,7 +149,7 @@ Be friendly, encouraging, and use some Spanish phrases naturally. Keep responses
         <img 
           src={dogImage} 
           alt="Spanish Helper Dog" 
-          className="dog-image"
+          className="chatbot-dog-image"
         />
       </button>
 

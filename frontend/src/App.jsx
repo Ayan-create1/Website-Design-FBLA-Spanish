@@ -1,18 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css';
 import SombreroDogChatbot from './components/SombreroDogChatbot_Final';
 import Navbar from './Navbar/Navbar';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login_Home from "./pages/Login_Home";
+import Register from "./pages/Register";
+import Signin from "./pages/Signin";
+import Home from "./pages/Home";
+import { AuthProvider } from './context/AuthContext';
+import { useAuth } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import { useLocation } from 'react-router-dom'
 
-function App() {
-  //const [count, setCount] = useState(0)
+function Layout() {
+  const { user } = useAuth();
+  const location = useLocation();
+
+  const authRoutes = ['/', '/register', '/signin'];
+  const isAuthPage = authRoutes.includes(location.pathname);
 
   return (
-    <div>
-      <Navbar />
-      <SombreroDogChatbot />
-    </div>
+    <>
+      {user && !isAuthPage && <Navbar />}
+      {user && !isAuthPage && <SombreroDogChatbot />}
+      <Routes>
+        <Route path="/" element={<Login_Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/signin" element={<Signin />} />
+        <Route path="/home" element={
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        } />
+      </Routes>
+    </>
+  )
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <Layout />
+      </AuthProvider>
+    </BrowserRouter>
   )
 }
 

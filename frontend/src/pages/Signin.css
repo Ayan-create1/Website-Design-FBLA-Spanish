@@ -1,0 +1,114 @@
+/* Page container */
+.login-page {
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Segoe UI', sans-serif;
+}
+  
+  /* ───── Header ───── */
+  .login-header {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #b9754b; /* darker brown */
+  }
+  
+  .login-header h1 {
+    color: white;
+    font-size: 48px;
+    letter-spacing: 3px;
+    font-weight: 600;
+  }
+  
+  /* ───── Main Content ───── */
+  .login-content {
+    flex: 1;
+    min-height: 0; /* THIS is the key fix — without this, flex children ignore overflow */
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 40px 80px;
+  }
+  
+  /* Left side image */
+  .left-side {
+    flex: 1;
+    min-height: 0; /* also needed here */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .dog-image {
+    width: 65%;
+    height: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  
+  /* ───── Right side form ───── */
+  .right-side {
+    width: 400px;
+  }
+  
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+  }
+  
+  /* Input group */
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .input-group label {
+    font-size: 28px;
+    font-weight: 500;
+  }
+  
+  .input-group input {
+    border: none;
+    border-bottom: 3px solid black;
+    background: transparent;
+    font-size: 22px;
+    padding: 8px 0;
+    outline: none;
+  }
+  
+  .input-group input:focus {
+    border-bottom: 3px solid #b9754b;
+  }
+  
+  /* Button */
+  .login-btn {
+    margin-top: 20px;
+    padding: 18px;
+    border-radius: 40px;
+    border: none;
+    background-color: #d98f52;
+    color: white;
+    font-size: 26px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
+  
+  .login-btn:hover {
+    background-color: #c67f44;
+    transform: scale(1.03);
+  }
+
+  .error-text {
+    color: red;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }

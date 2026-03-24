@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import './Navbar.css';
 import logo from '../assets/logo.png';
 import { User,Settings, Info, Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const navItems = [
-  { name: "HOME", href: "/products" },
-  { name: "TUTORING", href: "/tutoring"},
-  { name: "RESOURCES", href: "/resources"},
-  { name: "ACTIVITIES", href: "/activities"},
-  { name: "HISTORY", href: "/history"},
+  { name: "HOME", to: "/home" },
+  { name: "TUTORING", to: "/tutoring"},
+  { name: "RESOURCES", to: "/resources"},
+  { name: "ACTIVITIES", to: "/activities"},
+  { name: "HISTORY", to: "/history"},
 ]
 
 const Navbar = () => {
@@ -35,7 +36,7 @@ const Navbar = () => {
       <ul className="nav-links">
         {navItems.map((item,key) => (
           <li key={key}>
-            <a href={item.href}>{item.name}</a>
+            <Link to={item.to}>{item.name}</Link>
           </li>
         ))}
       </ul>
@@ -61,9 +62,9 @@ const Navbar = () => {
     <div className={`mobile-menu ${menuOpen ? 'open' : ''}`}>
       <div className="mobile-nav-links">
         {navItems.map((item, key) => (
-          <a key={key} href={item.href} onClick={() => setMenuOpen(false)}>
+          <Link key={key} to={item.to} onClick={() => setMenuOpen(false)}>
             {item.name}
-          </a>
+          </Link>
         ))}
       </div>
       <div className="mobile-icons">

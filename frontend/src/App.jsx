@@ -10,6 +10,8 @@ import { AuthProvider } from './context/AuthContext';
 import { useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useLocation } from 'react-router-dom'
+import Activities from './pages/Activities';
+import WordSearch from './pages/WordSearch';
 
 function Layout() {
   const { user } = useAuth();
@@ -23,6 +25,7 @@ function Layout() {
       {user && !isAuthPage && <Navbar />}
       {user && !isAuthPage && <SombreroDogChatbot />}
       <Routes>
+        <Route path="/activities" element={<Activities />} />
         <Route path="/" element={<Login_Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/signin" element={<Signin />} />

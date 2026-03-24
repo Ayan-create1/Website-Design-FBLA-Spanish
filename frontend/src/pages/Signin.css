@@ -34,7 +34,7 @@
 }
 
 .dog-image {
-  width: 320px;
+  width: 500px;
   height: auto;
 }
 
@@ -107,4 +107,18 @@
   font-size: 0.9rem;
   margin-bottom: 16px;
   text-align: center;
+}
+
+@media (max-width: 600px) {
+  .left-side {
+    display: none;
+  }
+
+  .login-content {
+    padding: 40px 28px;
+  }
+
+  .login-form {
+    width: 100%;
+  }
 }

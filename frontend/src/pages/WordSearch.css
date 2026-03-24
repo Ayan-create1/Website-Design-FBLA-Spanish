@@ -1,0 +1,300 @@
+/* WordSearch.css */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+.wordsearch-container {
+  --bg: #e49756;
+  --surface: #ffd3a6;
+  --grid-bg: #e49756;
+  --accent: #ffffff;
+  --accent2: #643200;
+  --text: #643200;
+  --muted: #643200;
+  --found: #ffffff;
+  --cell: 38px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 28px;
+  color: #643200;
+}
+
+h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(52px, 10vw, 80px);
+  letter-spacing: 6px;
+  color: var(--accent);
+  text-shadow: 4px 4px 0 var(--accent2), 8px 8px 0 #2a1a00;
+  line-height: 1;
+}
+
+.subtitle {
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* Game area container */
+.game-area {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  max-width: 860px;
+}
+
+/* Grid wrapper */
+.grid-wrap {
+  position: relative;
+  background: var(--grid-bg);
+  border: 2px solid #2a2a35;
+  border-radius: 4px;
+  padding: 14px;
+  box-shadow: 0 0 40px rgba(245,197,66,0.06), inset 0 0 60px rgba(0,0,0,0.3);
+  user-select: none;
+}
+
+/* Grid container */
+.grid {
+  display: grid;
+  gap: 2px;
+  cursor: crosshair;
+}
+
+/* Individual cell styles */
+.cell {
+  width: var(--cell);
+  height: var(--cell);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border-radius: 3px;
+  background: var(--surface);
+  color: var(--text);
+  transition: background 0.15s, color 0.15s, transform 0.1s;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cell.hover {
+  background: #2a2a3a;
+  color: var(--accent);
+  transform: scale(1.06);
+  z-index: 2;
+}
+
+.cell.selected {
+  background: #3a2e10;
+  color: var(--accent);
+  box-shadow: 0 0 8px rgba(245,197,66,0.4);
+}
+
+.cell.found {
+  background: #643200;
+  color: var(--found);
+  animation: pop 0.25s ease;
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+/* Sidebar styles */
+.sidebar {
+  min-width: 180px;
+  flex: 1;
+  max-width: 240px;
+}
+
+/* Sidebar title */
+.sidebar-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 3px;
+  color: var(--text);
+  border-bottom: 2px solid var(--accent2);
+  padding-bottom: 6px;
+  margin-bottom: 12px;
+}
+
+/* Word list container */
+.word-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Word item styles */
+.word-item {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 7px 10px;
+  background: var(--surface);
+  border: 1px solid #2a2a35;
+  border-radius: 3px;
+  color: var(--muted);
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+  line-height: 1.4;
+  cursor: default;
+}
+
+/* Clue inside word item */
+.word-item .clue {
+  display: block;
+  color: var(--text);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+/* Answer hint inside word item */
+.word-item .answer-hint {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  margin-top: 2px;
+  text-transform: uppercase;
+}
+
+/* When word is found */
+.word-item.found {
+  border-color: var(--found);
+  background: #0e2d1e;
+}
+
+.word-item.found .clue {
+  color: var(--found);
+  text-decoration: line-through;
+  text-decoration-color: rgba(61,220,132,0.5);
+}
+
+.word-item.found .answer-hint {
+  color: var(--found);
+  opacity: 0.7;
+}
+
+/* Add checkmark after found words */
+.word-item.found::after {
+  content: '✓';
+  position: absolute;
+  top: 7px; right: 8px;
+  font-size: 12px;
+  color: var(--found);
+}
+
+/* Status bar */
+.status {
+  margin-top: 18px;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+}
+
+.status span {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Win overlay overlay */
+.win-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 18px;
+}
+.win-overlay.show {
+  display: flex;
+}
+
+/* Win box styling */
+.win-box {
+  background: var(--surface);
+  border: 4px solid var(--accent2);
+  border-radius: 6px;
+  padding: 44px 52px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(245,197,66,0.2);
+  animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Win title */
+.win-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 64px;
+  color: var(--accent2);
+  letter-spacing: 6px;
+  text-shadow: 3px 3px 0 var(--accent);
+  line-height: 1;
+}
+
+/* Win subtitle */
+.win-sub {
+  color: var(--accent2);
+  font-size: 12px;
+  letter-spacing: 3px;
+  margin-top: 8px;
+}
+
+/* Win time */
+.win-time {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--bg);
+  margin: 16px 0;
+  letter-spacing: 2px;
+}
+
+/* Button styles */
+button {
+  background: var(--bg);
+  color: var(--accent);
+  border: none;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 3px;
+  padding: 12px 36px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  margin-top: 8px;
+}
+
+button:hover {
+  opacity: 0.85;
+  transform: scale(1.03);
+}
+
+/* Timer styles */
+.timer {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.timer span { color: var(--text); }

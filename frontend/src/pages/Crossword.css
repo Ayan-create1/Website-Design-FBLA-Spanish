@@ -1,0 +1,356 @@
+/* Crossword.css */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+.crossword-wrapper {
+  --bg: #ffffff;
+  --surface: #ffd3a6;
+  --grid-bg: #e49756;
+  --accent: #ffffff;
+  --accent2: #643200;
+  --text: #643200;
+  --muted: #643200;
+  --found: #ffffff;
+  --black-cell: #2a1a00;
+  --active-word: #f5c542;
+  --active-cell: #ffffff;
+  --cell-size: 28px;
+
+  font-family: 'Space Mono', monospace;
+  background: var(--bg);
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 12px 24px;
+}
+
+/* ── Header ── */
+.crossword-wrapper header {
+  text-align: center;
+  margin-bottom: 28px;
+  color: #643200;
+}
+
+.crossword-wrapper h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(52px, 10vw, 80px);
+  letter-spacing: 6px;
+  color: var(--accent2);
+  text-shadow: 4px 4px 0 var(--accent1), 8px 8px 0 #2a1a00;
+  line-height: 1;
+}
+
+.crossword-wrapper .subtitle {
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* ── Game area ── */
+.crossword-game-area {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+  justify-content: center;
+  width: 100%;
+  max-width: 1100px;
+}
+
+/* ── Grid panel ── */
+.crossword-grid-wrap {
+  background: var(--grid-bg);
+  border: 2px solid #2a2a35;
+  border-radius: 4px;
+  padding: 10px;
+  box-shadow: 0 0 40px rgba(245,197,66,0.06), inset 0 0 60px rgba(0,0,0,0.3);
+  user-select: none;
+}
+
+.crossword-grid {
+  display: inline-grid;
+  gap: 2px;
+}
+
+/* ── Cells ── */
+.cw-cell {
+  width: var(--cell-size);
+  height: var(--cell-size);
+  position: relative;
+  background: var(--black-cell);
+}
+
+.cw-cell.white {
+  background: var(--surface);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.cw-cell.white:hover {
+  background: #ffe8c2;
+}
+
+.cw-cell.active-word {
+  background: #c8860a;
+}
+
+.cw-cell.active-cell {
+  background: var(--active-cell);
+}
+
+.cw-cell .cell-number {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--accent2);
+  line-height: 1;
+  font-family: 'Space Mono', monospace;
+  pointer-events: none;
+}
+
+.cw-cell .cell-letter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text);
+  pointer-events: none;
+  text-transform: uppercase;
+}
+
+.cw-cell.active-cell .cell-letter {
+  color: #2a1a00;
+}
+
+.cw-cell.correct .cell-letter {
+  color: #2a6e40;
+}
+
+.cw-cell.incorrect .cell-letter {
+  color: #8b1a1a;
+}
+
+/* pop animation when a full word is completed */
+@keyframes pop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+.cw-cell.word-complete {
+  animation: pop 0.25s ease;
+}
+
+/* ── Hidden input ── */
+.crossword-hidden-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 1px;
+  height: 1px;
+}
+
+/* ── Status bar ── */
+.crossword-status {
+  margin-top: 14px;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+}
+.crossword-status span { color: var(--accent); font-weight: 700; }
+
+.crossword-timer {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--muted);
+  margin-top: 4px;
+  text-align: center;
+}
+.crossword-timer span { color: var(--text); }
+
+/* ── Sidebar ── */
+.crossword-sidebar {
+  min-width: 300px;
+  flex: 1;
+  max-width: 400px;
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.clue-section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 3px;
+  color: var(--text);
+  border-bottom: 2px solid var(--accent2);
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+}
+
+.clue-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.clue-item {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 6px 10px;
+  background: var(--surface);
+  border: 1px solid #2a2a35;
+  border-radius: 3px;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  line-height: 1.5;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.clue-item:hover {
+  background: #ffe8c2;
+}
+
+.clue-item.active {
+  background: #c8860a;
+  border-color: var(--accent2);
+  color: var(--accent);
+}
+
+.clue-item.solved {
+  background: #0e2d1e;
+  border-color: #3ddc84;
+  color: #3ddc84;
+  text-decoration: line-through;
+  text-decoration-color: rgba(61,220,132,0.5);
+}
+
+.clue-item.solved::after {
+  content: '✓';
+  position: absolute;
+  top: 6px; right: 8px;
+  font-size: 11px;
+  color: #3ddc84;
+}
+
+.clue-num {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-right: 4px;
+}
+.clue-item.active .clue-num { color: rgba(255,255,255,0.7); }
+
+/* ── Sidebar buttons ── */
+.crossword-sidebar button {
+  background: var(--grid-bg);
+  color: var(--accent);
+  border: none;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 3px;
+  padding: 10px 18px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  width: 100%;
+}
+.crossword-sidebar button:hover {
+  opacity: 0.85;
+  transform: scale(1.02);
+}
+
+.btn-row {
+  display: flex;
+  gap: 8px;
+}
+.btn-row button { flex: 1; font-size: 14px; padding: 8px 6px; }
+
+/* ── Win overlay ── */
+.cw-win-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+.cw-win-overlay.show { display: flex; }
+
+.cw-win-box {
+  background: var(--surface);
+  border: 4px solid var(--accent2);
+  border-radius: 6px;
+  padding: 44px 52px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(245,197,66,0.2);
+  animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.cw-win-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 64px;
+  color: var(--accent2);
+  letter-spacing: 6px;
+  text-shadow: 3px 3px 0 var(--accent);
+  line-height: 1;
+}
+.cw-win-sub  { color: var(--accent2); font-size: 12px; letter-spacing: 3px; margin-top: 8px; }
+.cw-win-time { font-size: 36px; font-weight: 700; color: var(--grid-bg); margin: 16px 0; letter-spacing: 2px; }
+
+.cw-win-box button {
+  background: var(--grid-bg);
+  color: var(--accent);
+  border: none;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 3px;
+  padding: 12px 36px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  margin-top: 8px;
+}
+.cw-win-box button:hover { opacity: 0.85; transform: scale(1.03); }
+
+/* ── Loading ── */
+.cw-loading {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 4px;
+  color: var(--accent);
+  text-align: center;
+  margin-top: 40px;
+}
+
+/* ── Scrollable clue columns on small screens ── */
+.clue-columns { max-height: 320px; overflow-y: auto; padding-right: 4px; }
+.clue-columns::-webkit-scrollbar { width: 4px; }
+.clue-columns::-webkit-scrollbar-track { background: transparent; }
+.clue-columns::-webkit-scrollbar-thumb { background: var(--accent2); border-radius: 2px; }

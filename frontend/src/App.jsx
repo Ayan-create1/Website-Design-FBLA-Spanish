@@ -12,6 +12,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { useLocation } from 'react-router-dom'
 import Activities from './pages/Activities';
 import WordSearch from './pages/WordSearch';
+import Crossword from './pages/Crossword';
+import GroupStudyPage from './pages/GSP';
 
 function Layout() {
   const { user } = useAuth();
@@ -26,6 +28,7 @@ function Layout() {
       {user && !isAuthPage && <SombreroDogChatbot />}
       <Routes>
         <Route path="/activities" element={<Activities />} />
+        <Route path="/groupstudy" element={<GroupStudyPage/>} />
         <Route path="/" element={<Login_Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/signin" element={<Signin />} />

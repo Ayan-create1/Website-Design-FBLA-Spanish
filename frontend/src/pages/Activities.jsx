@@ -2,9 +2,12 @@ import { useState } from "react";
 import WordSearch from "./WordSearch.jsx";
 import word from '../assets/WORD.png';
 import { X } from 'lucide-react';
+import cross from '../assets/CROSS_WORD.png';
+import CrossWord from "./Crossword.jsx";
 
 export default function Activities() {
     const [showGame, setShowGame] = useState(false);
+    const [showCGame, setShowCGame] = useState(false);
 
     return (
         <div style = {{ padding: "40px"}}>
@@ -17,6 +20,13 @@ export default function Activities() {
                 alt="Play Word Search"
                 style={{ width: "220px", cursor: "pointer" }}
                 onClick={() => setShowGame(true)}
+            />
+
+            <img
+                src= {cross}
+                alt="Play Cross Word"
+                style={{ width: "220px", cursor: "pointer" }}
+                onClick={() => setShowCGame(true)}
             />
 
             {/*Popup modal*/}
@@ -37,6 +47,27 @@ export default function Activities() {
                         </button>
 
                         <WordSearch />
+                    </div>
+                </div>
+            )}
+
+            {showCGame && (
+                <div
+                    style= {overlayStyle}
+                    onClick={() => setShowCGame(false)}
+                >
+                    <div
+                        style={modalStyle}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button
+                            onClick={() => setShowCGame(false)}
+                            style={{ marginBottom: "10px" }}
+                        >
+                            <X size={24} color="#000" />
+                        </button>
+
+                        <CrossWord />
                     </div>
                 </div>
             )}
@@ -62,4 +93,5 @@ const overlayStyle = {
     padding: "20px",
     borderRadius: "10px",
     maxWidth: "90%",
+
   };

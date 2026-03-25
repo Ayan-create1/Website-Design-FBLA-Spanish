@@ -10,7 +10,7 @@ export default function Activities() {
     const [showCGame, setShowCGame] = useState(false);
 
     return (
-        <div style = {{ padding: "40px"}}>
+        <div style = {{ padding: "15px"}}>
             <h1>Activities</h1>
 
             {/* Image Button */}
@@ -18,14 +18,14 @@ export default function Activities() {
             <img
                 src= {word}
                 alt="Play Word Search"
-                style={{ width: "220px", cursor: "pointer" }}
+                style={{ width: "500px", cursor: "pointer"}}
                 onClick={() => setShowGame(true)}
             />
 
             <img
                 src= {cross}
                 alt="Play Cross Word"
-                style={{ width: "220px", cursor: "pointer" }}
+                style={{ width: "500px", cursor: "pointer"}}
                 onClick={() => setShowCGame(true)}
             />
 
@@ -89,7 +89,7 @@ const overlayStyle = {
   };
   
   const modalStyle = {
-    background: "#f8f1f1",
+    background: "#ffffff",
     padding: "20px",
     borderRadius: "10px",
     maxWidth: "90%",

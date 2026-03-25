@@ -1,0 +1,110 @@
+/* ===== Resource Card ===== */
+/* Scoped with .rc- prefix */
+
+.rc-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 0 0 14px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    transition: transform 0.18s, box-shadow 0.18s;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-width: 0;
+    width: 200px;
+  }
+  
+  .rc-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+  }
+  
+  /* Top section */
+  .rc-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+    margin-bottom: 0;
+  }
+  
+  .rc-badge {
+    flex: 1;
+    padding: 10px 14px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-radius: 16px 0 0 0;
+  }
+  
+  .rc-badge-quiz { background: #e8845c; }
+  .rc-badge-pdf { background: #4a4a6a; }
+  
+  .rc-bookmark {
+    padding: 10px 12px;
+    border: none;
+    cursor: pointer;
+    color: rgba(255,255,255,0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s, background 0.15s;
+    border-radius: 0 16px 0 0;
+    flex-shrink: 0;
+  }
+  
+  .rc-quiz .rc-bookmark { background: #e8845c; }
+  .rc-pdf .rc-bookmark { background: #4a4a6a; }
+  .rc-bookmark:hover { filter: brightness(1.15); }
+  .rc-bookmark.rc-saved { color: #fff; }
+  .rc-bookmark svg { width: 16px; height: 16px; }
+  
+  /* Meta */
+  .rc-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 12px 14px 10px;
+  }
+  
+  .rc-author,
+  .rc-type {
+    font-size: 0.82rem;
+    color: #444;
+    text-align: center;
+  }
+  
+  /* Votes */
+  .rc-votes {
+    display: flex;
+    gap: 6px;
+    padding: 8px 14px 0;
+    justify-content: flex-start;
+  }
+  
+  .rc-vote-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 5px 8px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    color: #6a7080;
+    font-weight: 500;
+    transition: background 0.15s, color 0.15s;
+  }
+  
+  .rc-vote-btn:hover { background: #f4f2ef; }
+  .rc-vote-btn svg { width: 18px; height: 18px; }
+  
+  .rc-vote-btn.active-like { color: #e8845c; }
+  .rc-vote-btn.active-dislike { color: #4a4a6a; }

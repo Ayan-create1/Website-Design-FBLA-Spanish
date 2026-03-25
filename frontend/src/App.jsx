@@ -14,6 +14,8 @@ import Activities from './pages/Activities';
 import WordSearch from './pages/WordSearch';
 import Crossword from './pages/Crossword';
 import GroupStudyPage from './pages/GSP';
+import HistoryPage from './pages/History';
+import ResourcesPage from './pages/Resources';
 
 function Layout() {
   const { user } = useAuth();
@@ -28,6 +30,8 @@ function Layout() {
       {user && !isAuthPage && <SombreroDogChatbot />}
       <Routes>
         <Route path="/activities" element={<Activities />} />
+        <Route path="/resources" element={<ResourcesPage />} />
+        <Route path="/history" element={<HistoryPage />} />
         <Route path="/groupstudy" element={<GroupStudyPage/>} />
         <Route path="/" element={<Login_Home />} />
         <Route path="/register" element={<Register />} />

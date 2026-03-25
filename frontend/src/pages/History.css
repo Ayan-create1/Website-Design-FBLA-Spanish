@@ -2,84 +2,247 @@
 /* Scoped with .hp- prefix */
 
 .hp-page {
-    width: 100%;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 24px 20px 60px;
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
-  }
-  
-  .hp-section {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  
-  .hp-section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: linear-gradient(135deg, #d4895c, #b87040);
-    border-radius: 30px;
-    padding: 11px 20px;
-  }
-  
-  .hp-section-title {
-    font-size: 0.92rem;
-    font-weight: 800;
-    color: #fff;
-    letter-spacing: 1px;
-  }
-  
-  .hp-section-count {
-    font-size: 0.78rem;
-    color: rgba(255,255,255,0.75);
-    font-weight: 500;
-  }
-  
-  .hp-cards-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-    padding: 4px 0;
-  }
-  
-  .hp-loading {
-    display: flex;
-    justify-content: flex-start;
-    padding: 20px 0;
-  }
-  
-  .hp-spinner {
-    width: 22px;
-    height: 22px;
-    border: 2px solid #e5e0d8;
-    border-top-color: #e8845c;
-    border-radius: 50%;
-    animation: hp-spin 0.65s linear infinite;
-  }
-  
-  @keyframes hp-spin {
-    to { transform: rotate(360deg); }
-  }
-  
-  .hp-empty-text {
-    font-size: 0.85rem;
-    color: #aaa;
-    font-style: italic;
-    padding: 8px 4px;
-    margin: 0;
-  }
-  
-  .hp-unauthenticated {
-    text-align: center;
-    padding: 60px 20px;
-    color: #888;
-    font-size: 0.9rem;
-  }
-  
-  @media (max-width: 500px) {
-    .hp-cards-grid { justify-content: center; }
-  }
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.hp-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.hp-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #d4895c, #b87040);
+  border-radius: 30px;
+  padding: 11px 20px;
+}
+
+/* Green variant for the study sessions header */
+.hp-section-header--study {
+  background: linear-gradient(135deg, #d4895c, #b87040);
+}
+
+.hp-section-title {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.hp-section-count {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 500;
+}
+
+.hp-cards-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 4px 0;
+}
+
+.hp-loading {
+  display: flex;
+  justify-content: flex-start;
+  padding: 20px 0;
+}
+
+.hp-spinner {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #e5e0d8;
+  border-top-color: #e8845c;
+  border-radius: 50%;
+  animation: hp-spin 0.65s linear infinite;
+}
+
+@keyframes hp-spin {
+  to { transform: rotate(360deg); }
+}
+
+.hp-empty-text {
+  font-size: 0.85rem;
+  color: #aaa;
+  font-style: italic;
+  padding: 8px 4px;
+  margin: 0;
+}
+
+.hp-unauthenticated {
+  text-align: center;
+  padding: 60px 20px;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+/* ── Study Session Cards ─────────────────────────────────────────── */
+
+.hp-study-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.hp-study-card {
+  background: #fff;
+  border: 1px solid #e8e4de;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.hp-study-card:hover {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.07);
+  transform: translateY(-1px);
+}
+
+.hp-study-card-accent {
+  height: 3px;
+  background: linear-gradient(90deg, #d4895c, #b87040);
+}
+
+.hp-study-card-body {
+  padding: 16px 20px 12px;
+  flex: 1;
+}
+
+.hp-study-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.hp-study-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.hp-study-badge-upcoming {
+  background: #faefe1;
+  color: #b87040;
+}
+
+.hp-study-badge-past {
+  background: #faefe1;
+  color: #999;
+}
+
+.hp-study-role {
+  font-size: 11px;
+  font-weight: 600;
+  color: #aaa;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.hp-study-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.hp-study-card-date {
+  font-size: 0.8rem;
+  color: #888;
+  margin-bottom: 6px;
+}
+
+.hp-study-card-desc {
+  font-size: 0.83rem;
+  color: #666;
+  line-height: 1.55;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hp-study-card-footer {
+  padding: 10px 20px;
+  border-top: 1px solid #f0ede9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.hp-study-attendees {
+  font-size: 0.78rem;
+  color: #aaa;
+  font-weight: 500;
+}
+
+.hp-study-meet-btn {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #b87040;
+  text-decoration: none;
+  border-bottom: 1px dashed #b87040;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.hp-study-meet-btn:hover {
+  color: #d4895c;
+  border-color: #d4895c;
+}
+
+@media (max-width: 500px) {
+  .hp-cards-grid { justify-content: center; }
+}
+
+/* ── Study Session Filter Bar ────────────────────────────────────── */
+
+.hp-study-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.hp-study-filter-chip {
+  padding: 5px 14px;
+  border-radius: 99px;
+  border: 1.5px solid #e8e0d8;
+  background: #faf2ed;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #080300;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.hp-study-filter-chip:hover {
+  border-color: #d4895c;
+  color: #d4895c;
+}
+
+.hp-study-filter-chip.active {
+  background: #d4895c;
+  border-color: #d4895c;
+  color: #fff;
+}

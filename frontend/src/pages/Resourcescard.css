@@ -24,8 +24,7 @@
   /* Top section */
   .rc-top {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    align-items: flex-start;
     padding: 0;
     margin-bottom: 0;
   }
@@ -41,14 +40,16 @@
     overflow: hidden;
     text-overflow: ellipsis;
     border-radius: 16px 0 0 0;
+    flex-shrink: 0;
   }
   
   .rc-badge-quiz { background: #e8845c; }
   .rc-badge-pdf { background: #4a4a6a; }
   
   .rc-bookmark {
-    padding: 10px 12px;
+    padding: 10px 14px;
     border: none;
+    margin: 0;
     cursor: pointer;
     color: rgba(255,255,255,0.85);
     display: flex;
@@ -57,6 +58,7 @@
     transition: color 0.15s, background 0.15s;
     border-radius: 0 16px 0 0;
     flex-shrink: 0;
+    align-self: stretch;
   }
   
   .rc-quiz .rc-bookmark { background: #e8845c; }

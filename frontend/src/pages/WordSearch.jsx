@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import './WordSearch.css';
 import { X } from 'lucide-react';
 
-const WordSearch = () => {
+const WordSearch = ({ onComplete} ) => {
   const ROWS = 11;
   const COLS = 11;
   const NUM_WORDS = 8;
@@ -201,6 +201,7 @@ const WordSearch = () => {
           setTimeout(() => {
             setIsWin(true);
             stopTimer();
+            onComplete?.(timeElapsed);
           }, 400);
         }
         break;

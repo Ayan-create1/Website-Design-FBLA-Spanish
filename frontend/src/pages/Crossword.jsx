@@ -312,7 +312,7 @@ function numberGrid(placed, rows, cols) {
 // ─────────────────────────────────────────────
 // Component
 // ─────────────────────────────────────────────
-const Crossword = () => {
+const Crossword = ({ onComplete} ) => {
   const [gameData, setGameData] = useState(null);
   const [userInput, setUserInput] = useState({});  // "r,c" -> letter
   const [activeWord, setActiveWord] = useState(null); // { dir, number }
@@ -325,6 +325,7 @@ const Crossword = () => {
 
   // ── Build a new game ──
   const startGame = useCallback(() => {
+
     clearInterval(timerRef.current);
     let result = null;
     let tries = 0;
@@ -357,7 +358,10 @@ const Crossword = () => {
     const total = gameData.acrossClues.length + gameData.downClues.length;
     if (solvedWords.size === total && total > 0 && !isWin) {
       clearInterval(timerRef.current);
-      setTimeout(() => setIsWin(true), 400);
+      setTimeout(() => {
+        setIsWin(true);
+        onComplete?.(timeElapsed);
+      }, 400);
     }
   }, [solvedWords, gameData, isWin]);
 

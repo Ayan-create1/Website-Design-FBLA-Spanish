@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
+
 import PDFUploadModal from "./Pdfuploadmodal";
 import ResourceCard from "./Resourcescard";
 import ResourceDetailModal from "./Resourcesdetailmodal";
 import "./Resources.css";
 import supabase from "../helper/supabaseClient";
+import QuizBuilderModal from "./Quiz_Builder_Modal";
+import QuizDetailModal from "./Quiz_Detail_Modal";
+
 
 // Initialize Supabase — adjust to your project's client setup
 
@@ -15,6 +18,10 @@ export default function ResourcesPage() {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [selectedResource, setSelectedResource] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showQuizBuilder, setShowQuizBuilder] = useState(false);
+  const [editingDraft, setEditingDraft] = useState(null);
+  const [drafts, setDrafts] = useState([]);
+  const [draftsOpen, setDraftsOpen] = useState(false);
 
   // Get current user
   useEffect(() => {
@@ -30,6 +37,10 @@ export default function ResourcesPage() {
     fetchPublicResources();
   }, []);
 
+  useEffect(() => {
+    if (currentUser) fetchDrafts(currentUser.id);
+  }, [currentUser]);
+
   const fetchPublicResources = async () => {
     setLoading(true);
     const { data, error } = await supabase
@@ -42,12 +53,49 @@ export default function ResourcesPage() {
     setLoading(false);
   };
 
+  const fetchDrafts = async (userId) => {
+    const { data } = await supabase
+      .from("resources")
+      .select("*")
+      .eq("author_id", userId)
+      .eq("status", "draft")
+      .order("updated_at", { ascending: false });
+    setDrafts(data || []);
+  };
+
   // Called when a new upload finishes
   const handleUploadSuccess = (newResource) => {
     if (newResource.visibility === "public") {
       setPublicResources((prev) => [newResource, ...prev]);
     }
     // Private ones will appear in the History/My Content tab (handled there separately)
+  };
+
+  const handleDraftSaved = (savedDraft, wasUpdate) => {
+    setDrafts((prev) =>
+      wasUpdate
+        ? prev.map((d) => (d.id === savedDraft.id ? savedDraft : d))
+        : [savedDraft, ...prev]
+    );
+    setDraftsOpen(true); // auto-expand drafts panel so user sees it was saved
+  };
+ 
+  const handleQuizPublished = (publishedQuiz, wasDraft) => {
+    if (wasDraft) setDrafts((prev) => prev.filter((d) => d.id !== publishedQuiz.id));
+    if (publishedQuiz.visibility === "public") {
+      setPublicResources((prev) => [publishedQuiz, ...prev]);
+    }
+  };
+ 
+  const handleEditDraft = (draft) => {
+    setEditingDraft(draft);
+    setShowQuizBuilder(true);
+  };
+ 
+  const handleDeleteDraft = async (draftId) => {
+    if (!window.confirm("Delete this draft? This cannot be undone.")) return;
+    const { error } = await supabase.from("resources").delete().eq("id", draftId);
+    if (!error) setDrafts((prev) => prev.filter((d) => d.id !== draftId));
   };
 
   // Handle vote
@@ -103,6 +151,10 @@ export default function ResourcesPage() {
     r.description?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const draftQuestionCount = (draft) => {
+    try { return JSON.parse(draft.questions || "[]").length; } catch { return 0; }
+  };
+
   return (
     <div className="rp-page">
       {/* Search bar */}
@@ -127,7 +179,10 @@ export default function ResourcesPage() {
 
       {/* Action buttons */}
       <div className="rp-actions">
-        <button className="rp-action-btn rp-quiz-btn" onClick={() => { /* your make quiz handler */ }}>
+        <button
+          className="rp-action-btn rp-quiz-btn"
+          onClick={() => { setEditingDraft(null); setShowQuizBuilder(true); }} 
+        >
           <div className="rp-action-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
               <rect x="3" y="3" width="14" height="18" rx="2"/>
@@ -141,7 +196,7 @@ export default function ResourcesPage() {
           </div>
           <span className="rp-action-label">MAKE A QUIZ</span>
         </button>
-
+ 
         <button className="rp-action-btn rp-pdf-btn" onClick={() => setShowUploadModal(true)}>
           <div className="rp-action-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -155,6 +210,57 @@ export default function ResourcesPage() {
           <span className="rp-action-label">UPLOAD PDF</span>
         </button>
       </div>
+
+      {currentUser && drafts.length > 0 && (
+        <div className="rp-section">
+          <button
+            className="rp-section-header rp-drafts-header"
+            onClick={() => setDraftsOpen((o) => !o)}
+          >
+            <span className="rp-section-title">
+              DRAFTS
+              <span className="rp-drafts-badge">{drafts.length}</span>
+            </span>
+            <svg
+              className={`rp-drafts-chevron ${draftsOpen ? "open" : ""}`}
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+            >
+              <polyline points="6,9 12,15 18,9"/>
+            </svg>
+          </button>
+ 
+          {draftsOpen && (
+            <div className="rp-drafts-list">
+              {drafts.map((draft) => (
+                <div key={draft.id} className="rp-draft-row">
+                  <div className="rp-draft-info">
+                    <span className="rp-draft-title">{draft.title || "Untitled Quiz"}</span>
+                    <span className="rp-draft-meta">
+                      {draftQuestionCount(draft)} question{draftQuestionCount(draft) !== 1 ? "s" : ""} • {draft.visibility}
+                    </span>
+                  </div>
+                  <div className="rp-draft-actions">
+                    <button className="rp-draft-btn rp-draft-edit" onClick={() => handleEditDraft(draft)} title="Continue editing">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                      </svg>
+                      Continue
+                    </button>
+                    <button className="rp-draft-btn rp-draft-delete" onClick={() => handleDeleteDraft(draft.id)} title="Delete">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <polyline points="3,6 5,6 21,6"/>
+                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                        <path d="M9 6V4h6v2"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Resources section */}
       <div className="rp-section">
@@ -211,7 +317,29 @@ export default function ResourcesPage() {
         />
       )}
 
-      {selectedResource && (
+      {showQuizBuilder && (
+        <QuizBuilderModal
+          onClose={() => { setShowQuizBuilder(false); setEditingDraft(null); }}
+          onSaveSuccess={handleDraftSaved}
+          onPublishSuccess={handleQuizPublished}
+          currentUser={currentUser}
+          draft={editingDraft}
+        />
+      )}
+
+      {selectedResource?.type === "Quiz" && (
+        <QuizDetailModal
+          resource={selectedResource}
+          onClose={() => setSelectedResource(null)}
+          onEdit={
+            selectedResource.author_id === currentUser?.id
+              ? (r) => { setSelectedResource(null); setEditingDraft(r); setShowQuizBuilder(true); }
+              : null
+          }
+        />
+      )}
+ 
+      {selectedResource?.type === "PDF" && (
         <ResourceDetailModal
           resource={selectedResource}
           onClose={() => setSelectedResource(null)}

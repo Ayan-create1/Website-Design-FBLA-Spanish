@@ -16,6 +16,7 @@ import Crossword from './pages/Crossword';
 import GroupStudyPage from './pages/GSP';
 import HistoryPage from './pages/History';
 import ResourcesPage from './pages/Resources';
+import GoogleAnalyticsTracker from './GoogleAnalyticsTracker';
 
 function Layout() {
   const { user } = useAuth();
@@ -49,6 +50,7 @@ function Layout() {
 function App() {
   return (
     <BrowserRouter>
+    <GoogleAnalyticsTracker />
       <AuthProvider>
         <Layout />
       </AuthProvider>

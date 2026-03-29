@@ -22,14 +22,12 @@ import supabase from "../helper/supabaseClient"; // adjust path if needed
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   .gsp-root {
-    font-family: 'DM Sans', sans-serif;
+    font-family: inherit;
     min-height: 100vh;
-    color: #1a1a1a;
+    color: #7A5230;
   }
 
   /* ── Header ── */
@@ -47,19 +45,22 @@ const styles = `
     margin-bottom: 10px;
   }
   .gsp-title {
-    font-family: 'DM Serif Display', serif;
     font-size: clamp(36px, 5vw, 56px);
     line-height: 1.05;
     color: #111;
   }
-  .gsp-title em { font-style: italic; color: #3d6b4f; }
+  .gsp-title em { font-style: italic; color: #d4895c; }
   .gsp-subtitle {
     margin-top: 14px;
     font-size: 15px;
-    color: #666;
-    font-weight: 300;
+    color: #7A5230;
+    font-weight: 400;
     max-width: 480px;
     line-height: 1.6;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+
   }
   .gsp-header-row {
     display: flex;
@@ -69,7 +70,7 @@ const styles = `
     gap: 20px;
     margin-top: 32px;
     padding-bottom: 28px;
-    border-bottom: 1px solid #e5e3df;
+    border-bottom: 1px solid #7A5230;
   }
 
   /* ── Buttons ── */
@@ -79,23 +80,22 @@ const styles = `
     gap: 8px;
     padding: 11px 22px;
     border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.18s ease;
     border: none;
   }
-  .gsp-btn-primary { background: #1a1a1a; color: #fff; }
-  .gsp-btn-primary:hover { background: #3d6b4f; transform: translateY(-1px); }
+  .gsp-btn-primary {letter-spacing: normal; background: #d4895c; color: #fff; font-family: 'DM Sans', sans-serif; font-weight: 600}
+  .gsp-btn-primary:hover { background: #faf2ed; transform: translateY(-1px); color: #111}
   .gsp-btn-ghost { background: transparent; color: #555; border: 1px solid #ddd; }
   .gsp-btn-ghost:hover { border-color: #aaa; color: #111; }
   .gsp-btn-green {
-    background: #3d6b4f; color: #fff;
+    background: #d4895c; color: #fff;
     width: 100%; justify-content: center;
     padding: 13px; font-size: 15px;
   }
-  .gsp-btn-green:hover { background: #2e5440; }
+  .gsp-btn-green:hover { background: #d4895c; }
   .gsp-btn-sm { padding: 7px 14px; font-size: 13px; border-radius: 6px; }
   .gsp-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
 
@@ -134,39 +134,39 @@ const styles = `
     animation: slideUp 0.25s cubic-bezier(0.34,1.56,0.64,1);
   }
   @keyframes slideUp { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-  .gsp-modal-title { font-family: 'DM Serif Display', serif; font-size: 26px; margin-bottom: 6px; }
+  .gsp-modal-title { font-size: 26px; margin-bottom: 6px; }
   .gsp-modal-sub { font-size: 13px; color: #888; margin-bottom: 28px; }
 
   /* ── Form ── */
   .gsp-field { margin-bottom: 18px; }
   .gsp-label {
     display: block; font-size: 12px; font-weight: 600;
-    letter-spacing: 0.08em; text-transform: uppercase;
+    letter-spacing: 0.08em;
     color: #555; margin-bottom: 7px;
   }
   .gsp-input, .gsp-textarea {
     width: 100%; padding: 11px 14px;
     border: 1.5px solid #e0ddd9; border-radius: 8px;
-    font-family: 'DM Sans', sans-serif; font-size: 14px;
     color: #1a1a1a; background: #fdfcfb;
     transition: border-color 0.15s; outline: none;
   }
-  .gsp-input:focus, .gsp-textarea:focus { border-color: #3d6b4f; }
+  .gsp-input:focus, .gsp-textarea:focus { border-color: #d4895c; }
   .gsp-textarea { resize: vertical; min-height: 88px; line-height: 1.5; }
   .gsp-modal-footer { display: flex; gap: 10px; margin-top: 24px; }
 
   /* ── Main / Grid ── */
   .gsp-main { max-width: 1100px; margin: 0 auto; padding: 36px 48px 80px; }
   .gsp-filter-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 32px; flex-wrap: wrap; }
-  .gsp-filter-label { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #aaa; }
+  .gsp-filter-label { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #7A5230; }
   .gsp-chip {
+    font-family: 'DM Sans', sans-serif;
     padding: 6px 14px; border-radius: 99px;
     border: 1.5px solid #e0ddd9; font-size: 13px; font-weight: 500;
-    color: #555; background: transparent; cursor: pointer;
-    transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+    color: #080300;; background: #faf2ed; cursor: pointer;
+    transition: all 0.15s; 
   }
-  .gsp-chip:hover { border-color: #3d6b4f; color: #3d6b4f; }
-  .gsp-chip.active { background: #3d6b4f; border-color: #3d6b4f; color: #fff; }
+  .gsp-chip:hover { border-color: #d4895c; color: #d4895c; }
+  .gsp-chip.active { background: #d4895c; border-color: #d4895c; color: #fff; }
   .gsp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
 
   /* ── Card ── */
@@ -176,11 +176,11 @@ const styles = `
     display: flex; flex-direction: column;
   }
   .gsp-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.08); transform: translateY(-2px); }
-  .gsp-card-accent { height: 4px; background: linear-gradient(90deg, #3d6b4f, #6aad88); }
+  .gsp-card-accent { height: 4px; background: linear-gradient(90deg,#d4895c, #b87040); }
   .gsp-card-body { padding: 22px 24px; flex: 1; }
   .gsp-card-meta { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #888; font-weight: 500; margin-bottom: 10px; }
   .gsp-card-dot { width: 3px; height: 3px; border-radius: 50%; background: #ccc; }
-  .gsp-card-title { font-family: 'DM Serif Display', serif; font-size: 20px; line-height: 1.2; color: #111; margin-bottom: 10px; }
+  .gsp-card-title { font-size: 1rem; font-weight: 700; line-height: 1.2; color: #111; margin-bottom: 10px; }
   .gsp-card-desc {
     font-size: 14px; color: #666; line-height: 1.6;
     display: -webkit-box; -webkit-line-clamp: 3;
@@ -192,13 +192,13 @@ const styles = `
   }
   .gsp-attendees { font-size: 12px; color: #888; font-weight: 500; }
   .gsp-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 99px; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; }
-  .gsp-badge-upcoming { background: #edf5f0; color: #3d6b4f; }
-  .gsp-badge-past     { background: #f4f4f4; color: #999; }
+  .gsp-badge-upcoming { background: #faefe1; color: #d4895c }
+  .gsp-badge-past     { background: #faefe1; color: #d4895c; }
 
   /* ── Meet link style (used on cards for owner + registered users) ── */
   .gsp-meet-link {
-    font-size: 12px; color: #3d6b4f; font-weight: 600;
-    text-decoration: none; border-bottom: 1px dashed #3d6b4f;
+    font-size: 12px; color: #d4895c; font-weight: 600;
+    text-decoration: none; border-bottom: 1px dashed #d4895c;
   }
 
   /* ── Empty state ── */
@@ -210,7 +210,7 @@ const styles = `
   /* ── Spinner ── */
   .gsp-spinner {
     width: 36px; height: 36px;
-    border: 3px solid #eee; border-top-color: #3d6b4f;
+    border: 3px solid #eee; border-top-color: #d4895c;
     border-radius: 50%; animation: spin 0.7s linear infinite;
     margin: 60px auto;
   }
@@ -356,7 +356,7 @@ function RegisterModal({ session, onClose, user, onRegistered }) {
           <>
             <div className="gsp-modal-title">Join Session</div>
             <div className="gsp-modal-sub">{formatDate(session.scheduled_at)}</div>
-            <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, margin: "16px 0 8px" }}>
+            <div style={{ fontFamily: inherit, fontSize: 20, margin: "16px 0 8px" }}>
               {session.title}
             </div>
             {session.description && (
@@ -387,7 +387,7 @@ function RegisterModal({ session, onClose, user, onRegistered }) {
               style={{
                 display: "block", background: "#f0f7f3",
                 border: "1.5px solid #c5dfc9", borderRadius: 10,
-                padding: "14px 16px", color: "#3d6b4f",
+                padding: "14px 16px", color: "#d4895c",
                 fontWeight: 600, fontSize: 14,
                 wordBreak: "break-all", textDecoration: "none",
               }}
@@ -435,7 +435,7 @@ function SessionCard({ session, user, onRegister, myRegistrations }) {
       <div className="gsp-card-footer">
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <span className={`gsp-badge ${past ? "gsp-badge-past" : "gsp-badge-upcoming"}`}>
-            {past ? "📁 Past" : "🟢 Upcoming"}
+            {past ? "📁 Past" : "🟠 Upcoming"}
           </span>
           <span className="gsp-attendees">{session.registration_count ?? 0} joined</span>
         </div>
@@ -539,14 +539,13 @@ export default function GroupStudyPage() {
 
         {/* ── Header ── */}
         <header className="gsp-header">
-          <div className="gsp-eyebrow">Student Community</div>
-          <h1 className="gsp-title">Group Study <em>Sessions</em></h1>
+          <h1 className="gsp-title">Group Study Sessions </h1>
           <p className="gsp-subtitle">
             Browse upcoming study sessions or create one — paste your Google Meet link when creating.
           </p>
           <div className="gsp-header-row">
             <div className="gsp-filter-bar" style={{ margin: 0 }}>
-              <span className="gsp-filter-label">Show</span>
+              
               {["upcoming", "all", "mine"].map((f) => (
                 <button
                   key={f}
@@ -562,7 +561,7 @@ export default function GroupStudyPage() {
             </div>
             {user ? (
               <button className="gsp-btn gsp-btn-primary" onClick={() => setShowCreate(true)}>
-                + New Session
+                +     NEW SESSION
               </button>
             ) : (
               <span style={{ fontSize: 13, color: "#aaa" }}>Sign in to create a session</span>

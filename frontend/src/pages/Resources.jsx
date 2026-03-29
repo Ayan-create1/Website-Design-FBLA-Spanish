@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-
 import PDFUploadModal from "./Pdfuploadmodal";
 import ResourceCard from "./Resourcescard";
 import ResourceDetailModal from "./Resourcesdetailmodal";
@@ -187,8 +186,8 @@ export default function ResourcesPage() {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
               <rect x="3" y="3" width="14" height="18" rx="2"/>
               <polyline points="7,9 9,11 13,7"/>
-              <polyline points="7,13 9,15 13,11"/>
-              <polyline points="7,17 9,19 13,15"/>
+              <polyline points="7,14 9,16 13,12"/>
+              
               <line x1="15" y1="8" x2="21" y2="8"/>
               <line x1="15" y1="12" x2="21" y2="12"/>
               <line x1="15" y1="16" x2="21" y2="16"/>
@@ -202,9 +201,8 @@ export default function ResourcesPage() {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
               <polyline points="14,2 14,8 20,8"/>
-              <text x="6" y="17" fill="currentColor" stroke="none" fontSize="5" fontWeight="bold">PDF</text>
-              <line x1="12" y1="21" x2="12" y2="15"/>
-              <polyline points="9,18 12,21 15,18"/>
+              <line x1="12" y1="17" x2="12" y2="11"/>
+              <polyline points="9,14 12,17 15,14"/>
             </svg>
           </div>
           <span className="rp-action-label">UPLOAD PDF</span>

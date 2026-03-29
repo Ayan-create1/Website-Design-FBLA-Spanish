@@ -98,7 +98,7 @@
   /* ── Steps ── */
   .qbm-steps {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     padding: 14px 22px;
     background: #faf9f7;
     border-bottom: 1px solid #f0ede8;
@@ -107,8 +107,9 @@
   
   .qbm-step {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 7px;
+    gap: 5px;
     flex: 1;
     position: relative;
   }
@@ -116,8 +117,8 @@
   .qbm-step:not(:last-child)::after {
     content: "";
     position: absolute;
-    left: calc(50% + 14px);
-    right: calc(-50% + 14px);
+    left: calc(50% + 16px);
+    right: calc(-50% + 16px);
     top: 14px;
     height: 2px;
     background: #e5e2dc;

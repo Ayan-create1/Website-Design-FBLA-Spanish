@@ -98,7 +98,7 @@
   /* Progress steps */
   .pum-steps {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     padding: 16px 24px;
     gap: 0;
     background: #faf9f7;
@@ -107,8 +107,9 @@
   
   .pum-step {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 7px;
+    gap: 5px;
     flex: 1;
     position: relative;
   }
@@ -116,8 +117,8 @@
   .pum-step:not(:last-child)::after {
     content: "";
     position: absolute;
-    left: calc(50% + 14px);
-    right: calc(-50% + 14px);
+    left: calc(50% + 16px);
+    right: calc(-50% + 16px);
     top: 14px;
     height: 2px;
     background: #e5e2dc;
@@ -144,22 +145,9 @@
     transition: all 0.2s;
   }
   
-  .pum-step.active .pum-step-dot {
-    border-color: #e8845c;
-    color: #e8845c;
-    background: #fff6f2;
-  }
-  
-  .pum-step.done .pum-step-dot {
-    border-color: #e8845c;
-    background: #e8845c;
-    color: #fff;
-  }
-  
-  .pum-step.done .pum-step-dot svg {
-    width: 13px;
-    height: 13px;
-  }
+  .pum-step.active .pum-step-dot { border-color: #e8845c; color: #e8845c; background: #fff6f2; }
+  .pum-step.done .pum-step-dot { border-color: #e8845c; background: #e8845c; color: #fff; }
+  .pum-step.done .pum-step-dot svg { width: 13px; height: 13px; }
   
   .pum-step-label {
     font-size: 0.72rem;
@@ -170,6 +158,7 @@
   
   .pum-step.active .pum-step-label { color: #e8845c; }
   .pum-step.done .pum-step-label { color: #888; }
+
   
   /* Body */
   .pum-body {

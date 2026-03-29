@@ -1,9 +1,20 @@
 import "./Resourcesdetailmodal.css";
+import QuizDetailModal from "./Quiz_Detail_Modal";
 
-export default function ResourceDetailModal({ resource, onClose }) {
+export default function ResourceDetailModal({ resource, onClose, onEdit, onPerfectScore }) {
   if (!resource) return null;
 
-  const isQuiz = resource.type === "Quiz";
+  // Delegate entirely to the dedicated quiz modal
+  if (resource.type === "Quiz") {
+    return (
+      <QuizDetailModal
+        resource={resource}
+        onClose={onClose}
+        onEdit={onEdit}
+        onPerfectScore={onPerfectScore}
+      />
+    );
+  }
 
   const handleViewPDF = () => {
     if (resource.file_url) {
@@ -14,11 +25,9 @@ export default function ResourceDetailModal({ resource, onClose }) {
   return (
     <div className="rdm-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="rdm-wrapper">
-        {/* Color stripe */}
-        <div className={`rdm-stripe ${isQuiz ? "rdm-stripe-quiz" : "rdm-stripe-pdf"}`} />
+        <div className="rdm-stripe rdm-stripe-pdf" />
 
         <div className="rdm-content">
-          {/* Header */}
           <div className="rdm-header">
             <div className="rdm-type-chip">{resource.type}</div>
             <button className="rdm-close" onClick={onClose}>
@@ -28,10 +37,8 @@ export default function ResourceDetailModal({ resource, onClose }) {
             </button>
           </div>
 
-          {/* Title */}
           <h2 className="rdm-title">{resource.title || "Untitled"}</h2>
 
-          {/* Author */}
           <p className="rdm-author">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -40,7 +47,6 @@ export default function ResourceDetailModal({ resource, onClose }) {
             @{resource.author_username || "unknown"}
           </p>
 
-          {/* Description */}
           {resource.description ? (
             <div className="rdm-description">
               <h3 className="rdm-desc-label">About this resource</h3>
@@ -50,7 +56,6 @@ export default function ResourceDetailModal({ resource, onClose }) {
             <p className="rdm-no-desc">No description provided.</p>
           )}
 
-          {/* Stats */}
           <div className="rdm-stats">
             <div className="rdm-stat">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -68,12 +73,8 @@ export default function ResourceDetailModal({ resource, onClose }) {
             </div>
           </div>
 
-          {/* Actions */}
-          {resource.type === "PDF" && resource.file_url && (
-            <button
-              className={`rdm-view-btn ${isQuiz ? "rdm-btn-quiz" : "rdm-btn-pdf"}`}
-              onClick={handleViewPDF}
-            >
+          {resource.file_url && (
+            <button className="rdm-view-btn rdm-btn-pdf" onClick={handleViewPDF}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                 <polyline points="14,2 14,8 20,8"/>

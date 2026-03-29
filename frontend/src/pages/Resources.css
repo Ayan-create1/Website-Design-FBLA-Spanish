@@ -95,13 +95,13 @@
   }
   
   .rp-quiz-btn {
-    background: linear-gradient(145deg, #e8845c, #c96a3f);
+    background: #b87040;
     box-shadow: 0 4px 16px rgba(201, 106, 63, 0.25);
   }
   
   .rp-pdf-btn {
-    background: linear-gradient(145deg, #d4895c, #b87040);
-    box-shadow: 0 4px 16px rgba(184, 112, 64, 0.25);
+    background: #b87040;
+    box-shadow: 0 4px 16px rgba(201, 106, 63, 0.25);
   }
   
   .rp-action-icon {

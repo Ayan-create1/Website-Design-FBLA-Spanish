@@ -63,6 +63,7 @@ export default function HistoryPage() {
   const [studyLoading, setStudyLoading] = useState(true);
   const [selectedResource, setSelectedResource] = useState(null);
   const [studyFilter, setStudyFilter] = useState("upcoming"); // "upcoming" | "past" | "all"
+  const [completedQuizzes, setCompletedQuizzes] = useState([]);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -156,6 +157,15 @@ export default function HistoryPage() {
 
     setMyContent(mine || []);
     setSavedContent(saved?.map((s) => ({ ...s.resources, is_saved: true })) || []);
+    const { data: completed } = await supabase
+      .from("completed_quizzes")
+      .select("resource_id, completed_at, resources(*)")
+      .eq("user_id", userId)
+      .order("completed_at", { ascending: false });
+
+    setCompletedQuizzes(
+      completed?.map((c) => ({ ...c.resources, completed_at: c.completed_at })) || []
+    );
     setLoading(false);
   };
 
@@ -198,6 +208,47 @@ export default function HistoryPage() {
     }
   };
 
+  const handlePerfectScore = async (resourceId) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      console.log("❌ No current user");
+      return;
+    }
+    console.log("🔥 handlePerfectScore fired", resourceId, user.id);
+  
+    const { error: upsertError } = await supabase.from("completed_quizzes").upsert(
+      {
+        user_id: user.id,
+        resource_id: resourceId,
+        completed_at: new Date().toISOString(),
+      },
+      { onConflict: "user_id,resource_id" }
+    );
+  
+    if (upsertError) {
+      console.error("❌ upsert failed:", upsertError);
+      return;
+    }
+  
+    console.log("✅ upsert succeeded");
+  
+    const { data, error: fetchError } = await supabase
+      .from("completed_quizzes")
+      .select("resource_id, completed_at, resources(*)")
+      .eq("user_id", user.id)
+      .order("completed_at", { ascending: false });
+  
+    if (fetchError) {
+      console.error("❌ re-fetch failed:", fetchError);
+      return;
+    }
+  
+    setCompletedQuizzes(
+      data?.map((c) => ({ ...c.resources, completed_at: c.completed_at })) || []
+    );
+  };
+  
   if (!currentUser && !loading && !studyLoading) {
     return (
       <div className="hp-page">
@@ -321,10 +372,42 @@ export default function HistoryPage() {
         )}
       </div>
 
+      {/* ── COMPLETED QUIZZES ── */}
+      <div className="hp-section">
+        <div className="hp-section-header">
+          <span className="hp-section-title">COMPLETED QUIZZES</span>
+          {!loading && (
+            <span className="hp-section-count">
+              {completedQuizzes.length} quiz{completedQuizzes.length !== 1 ? "zes" : ""}
+            </span>
+          )}
+        </div>
+
+        {loading ? (
+          <div className="hp-loading"><div className="hp-spinner" /></div>
+        ) : completedQuizzes.length === 0 ? (
+          <p className="hp-empty-text">No completed quizzes yet — get a perfect score to earn one!</p>
+        ) : (
+          <div className="hp-cards-grid">
+            {completedQuizzes.map((r) => (
+              <ResourceCard
+                key={r.id}
+                resource={r}
+                currentUser={currentUser}
+                onVote={handleVote}
+                onSave={handleSave}
+                onClick={setSelectedResource}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
       {selectedResource && (
         <ResourceDetailModal
           resource={selectedResource}
           onClose={() => setSelectedResource(null)}
+          onPerfectScore={handlePerfectScore}
         />
       )}
     </div>

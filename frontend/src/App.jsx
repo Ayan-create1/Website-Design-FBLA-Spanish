@@ -32,14 +32,13 @@ function Layout() {
       <Routes>
         <Route path="/activities" element={<Activities />} />
         <Route path="/resources" element={<ResourcesPage />} />
-        <Route path="/history" element={<HistoryPage />} />
         <Route path="/groupstudy" element={<GroupStudyPage/>} />
         <Route path="/" element={<Login_Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/home" element={
           <ProtectedRoute>
-            <Home />
+            <HistoryPage />
           </ProtectedRoute>
         } />
       </Routes>

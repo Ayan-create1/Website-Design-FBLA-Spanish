@@ -7,20 +7,20 @@
 }
 
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #b9754b;
-    color: #ffffff;
-    /*padding:; */
-    position: fixed;  /* Add this */
-    top: 0;           /* Add this */ 
-    left: 0;
-    right: 0; 
-    padding-right: 2rem;
-    padding-left: 2rem; 
-    z-index: 1000;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #b9754b;
+  color: #ffffff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;           /* ← add this */
+  padding: .25rem 2rem;  /* ← consistent horizontal padding */
+  box-sizing: border-box; /* ← prevents padding from adding extra width */
+  z-index: 1000;
+}
   
   .navbar-left .logo {
     display: flex;
@@ -63,12 +63,20 @@
   .navbar-right {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 1rem;        /* ← gives consistent spacing between icons */
   }
   
   .navbar-right .user-icon {
     color: #fff;
     text-decoration: none;
+    display: flex;            /* ← key fix */
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    line-height: 1;           /* ← prevents line-height from shifting the button down */
     transition: opacity 300ms;
   }
   
@@ -123,17 +131,30 @@
 
 .mobile-icons {
   display: flex;
-  gap: 2rem;
+  align-items: center;  /* ← vertical alignment fix */
+  gap: 1rem;            /* ← reduce the gap */
   margin-top: 3rem;
 }
 
 .mobile-icons .user-icon {
   color: #fff;
   text-decoration: none;
+  display: flex;          /* ← makes the icon itself align properly */
+  align-items: center;
+  justify-content: center;
+  background: none;       /* ← strip button default styles */
+  border: none;           /* ← strip button default styles */
+  padding: 0;             /* ← strip button default padding */
+  cursor: pointer;
 }
 
 /* Mobile breakpoint */
 @media (max-width: 768px) {
+  .navbar {
+    padding: 0.5rem 1rem; /* tighter on mobile */
+    box-sizing: border-box;
+  }
+
   .navbar-center,
   .navbar-right {
     display: none;

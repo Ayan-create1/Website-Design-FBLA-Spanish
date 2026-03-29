@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import './Navbar.css';
 import logo from '../assets/logo.png';
-import { User,Settings, Info, Menu, X } from 'lucide-react';
+import { User,Settings, Info, Menu, X, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import supabase from "../helper/supabaseClient";
 
 const navItems = [
-  { name: "HOME", to: "/home" },
+  { name: "HOME", to: "/home"},
   { name: "GROUP STUDY", to: "/groupstudy"},
-  { name: "RESOURCES", to: "/resources"},
   { name: "ACTIVITIES", to: "/activities"},
-  { name: "HISTORY", to: "/history"},
+  { name: "RESOURCES", to: "/resources"},
+  
 ]
 
 const Navbar = () => {
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.href = "/";
+  };
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
@@ -44,9 +51,10 @@ const Navbar = () => {
       
     {/* Desktop icons */}
     <div className="navbar-right">
-      <a href="/info" className="user-icon"><Info size={24} /></a>
-      <a href="/settings" className="user-icon"><Settings size={24} /></a>
-      <a href="/account" className="user-icon"><User size={24} /></a>
+      <a href="/info" className="user-icon"><Info size={28} /></a>
+      <a className="user-icon" onClick={handleLogout}>
+        <LogOut size={28} />
+      </a>
     </div>
     
     {/* Hamburger button */}
@@ -68,12 +76,12 @@ const Navbar = () => {
         ))}
       </div>
       <div className="mobile-icons">
-        <a href="/info" className="user-icon"><Info size={24} /></a>
-        <a href="/settings" className="user-icon"><Settings size={24} /></a>
-        <a href="/account" className="user-icon"><User size={24} /></a>
+        <a href="/info" className="user-icon"><Info size={28} /></a>
+        <a className="user-icon" onClick={handleLogout}>
+          <LogOut size={28} />
+        </a>
       </div>
     </div>
-
   </nav>
   );
 };

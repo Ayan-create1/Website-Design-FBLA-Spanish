@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./Quiz_Detail_Modal.css";
 
-export default function QuizDetailModal({ resource, onClose, onEdit }) {
+export default function QuizDetailModal({ resource, onClose, onEdit, onPerfectScore }) {
   const [taking, setTaking] = useState(false);
   const [answers, setAnswers] = useState({});         // { questionId: answerIndex }
   const [submitted, setSubmitted] = useState(false);
@@ -21,7 +21,11 @@ export default function QuizDetailModal({ resource, onClose, onEdit }) {
 
   const handleSubmit = () => {
     if (Object.keys(answers).length < questions.length) return;
+    const finalScore = questions.filter((q) => answers[q.id] === q.correctIndex).length;
     setSubmitted(true);
+    if (onPerfectScore) {
+      onPerfectScore(resource.id);
+    }
   };
 
   const score = submitted

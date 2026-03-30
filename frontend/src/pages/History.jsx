@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import supabase from '../helper/supabaseClient';
 import ResourceCard from "./Resourcescard";
 import ResourceDetailModal from "./Resourcesdetailmodal";
 import "./History.css";
+import welcomeBanner from "../assets/welcome.png";
 
 // Formats an ISO timestamp into a readable string like "Fri, Nov 15, 2:00 PM"
 function formatDate(iso) {
@@ -19,25 +20,37 @@ function isPast(iso) {
 // ─── Component: StudySessionCard ──────────────────────────────────────────────
 function StudySessionCard({ session, isOwner }) {
   const past = isPast(session.scheduled_at);
+  const statusLabel = past ? "Past session" : "Upcoming session";
+  const roleLabel = isOwner ? "Hosted by you" : "Registered";
 
   return (
-    <div className="hp-study-card">
-      <div className="hp-study-card-accent" />
+    <article
+      className="hp-study-card"
+      aria-label={`${statusLabel}: ${session.title}, ${formatDate(session.scheduled_at)}, ${roleLabel}`}
+    >
+      <div className="hp-study-card-accent" aria-hidden="true" />
       <div className="hp-study-card-body">
         <div className="hp-study-card-meta">
-          <span className={`hp-study-badge ${past ? "hp-study-badge-past" : "hp-study-badge-upcoming"}`}>
+          <span
+            className={`hp-study-badge ${past ? "hp-study-badge-past" : "hp-study-badge-upcoming"}`}
+            aria-label={statusLabel}
+          >
             {past ? "📁 Past" : "🟠 Upcoming"}
           </span>
-          <span className="hp-study-role">{isOwner ? "Hosted by you" : "Registered"}</span>
+          <span className="hp-study-role" aria-label={`Your role: ${roleLabel}`}>
+            {isOwner ? "Hosted by you" : "Registered"}
+          </span>
         </div>
         <div className="hp-study-card-title">{session.title}</div>
-        <div className="hp-study-card-date">{formatDate(session.scheduled_at)}</div>
+        <div className="hp-study-card-date">
+          <time dateTime={session.scheduled_at}>{formatDate(session.scheduled_at)}</time>
+        </div>
         {session.description && (
           <p className="hp-study-card-desc">{session.description}</p>
         )}
       </div>
       <div className="hp-study-card-footer">
-        <span className="hp-study-attendees">
+        <span className="hp-study-attendees" aria-label={`${session.registration_count ?? 0} people joined`}>
           {session.registration_count ?? 0} joined
         </span>
         <a
@@ -45,11 +58,12 @@ function StudySessionCard({ session, isOwner }) {
           target="_blank"
           rel="noreferrer"
           className="hp-study-meet-btn"
+          aria-label={`Open Google Meet link for ${session.title} (opens in new tab)`}
         >
           Open Meet Link ↗
         </a>
       </div>
-    </div>
+    </article>
   );
 }
 
@@ -64,6 +78,12 @@ export default function HistoryPage() {
   const [selectedResource, setSelectedResource] = useState(null);
   const [studyFilter, setStudyFilter] = useState("upcoming"); // "upcoming" | "past" | "all"
   const [completedQuizzes, setCompletedQuizzes] = useState([]);
+
+  // Live region for dynamic announcements
+  const liveRef = useRef(null);
+  const announce = (msg) => {
+    if (liveRef.current) liveRef.current.textContent = msg;
+  };
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -82,7 +102,6 @@ export default function HistoryPage() {
   const fetchStudySessions = async (userId) => {
     setStudyLoading(true);
 
-    // Sessions the user created
     const { data: created, error: createdError } = await supabase
       .from("study_sessions")
       .select(`*, registration_count:session_registrations(count)`)
@@ -91,7 +110,6 @@ export default function HistoryPage() {
 
     if (createdError) console.error("fetchStudySessions [created]:", createdError);
 
-    // Session IDs the user registered for (but didn't create)
     const { data: registrations, error: regError } = await supabase
       .from("session_registrations")
       .select("session_id")
@@ -101,7 +119,6 @@ export default function HistoryPage() {
 
     const registeredIds = registrations?.map((r) => r.session_id) ?? [];
 
-    // Fetch those registered sessions (excluding ones user already created)
     let registeredSessions = [];
     if (registeredIds.length > 0) {
       const { data: regSessions, error: regSessionsError } = await supabase
@@ -126,7 +143,6 @@ export default function HistoryPage() {
       ...registeredSessions.map((s) => normalize(s, false)),
     ];
 
-    // Sort: upcoming first, then by date
     all.sort((a, b) => {
       const aPast = isPast(a.scheduled_at);
       const bPast = isPast(b.scheduled_at);
@@ -141,14 +157,12 @@ export default function HistoryPage() {
   const fetchContent = async (userId) => {
     setLoading(true);
 
-    // My content = all resources uploaded by this user (public AND private)
     const { data: mine } = await supabase
       .from("resources")
       .select("*")
       .eq("author_id", userId)
       .order("created_at", { ascending: false });
 
-    // Saved content = resources the user bookmarked
     const { data: saved } = await supabase
       .from("saved_resources")
       .select("resource_id, resources(*)")
@@ -157,6 +171,7 @@ export default function HistoryPage() {
 
     setMyContent(mine || []);
     setSavedContent(saved?.map((s) => ({ ...s.resources, is_saved: true })) || []);
+
     const { data: completed } = await supabase
       .from("completed_quizzes")
       .select("resource_id, completed_at, resources(*)")
@@ -210,13 +225,13 @@ export default function HistoryPage() {
 
   const handlePerfectScore = async (resourceId) => {
     const { data: { user } } = await supabase.auth.getUser();
-    
+
     if (!user) {
       console.log("❌ No current user");
       return;
     }
     console.log("🔥 handlePerfectScore fired", resourceId, user.id);
-  
+
     const { error: upsertError } = await supabase.from("completed_quizzes").upsert(
       {
         user_id: user.id,
@@ -225,34 +240,35 @@ export default function HistoryPage() {
       },
       { onConflict: "user_id,resource_id" }
     );
-  
+
     if (upsertError) {
       console.error("❌ upsert failed:", upsertError);
       return;
     }
-  
+
     console.log("✅ upsert succeeded");
-  
+
     const { data, error: fetchError } = await supabase
       .from("completed_quizzes")
       .select("resource_id, completed_at, resources(*)")
       .eq("user_id", user.id)
       .order("completed_at", { ascending: false });
-  
+
     if (fetchError) {
       console.error("❌ re-fetch failed:", fetchError);
       return;
     }
-  
+
     setCompletedQuizzes(
       data?.map((c) => ({ ...c.resources, completed_at: c.completed_at })) || []
     );
+    announce("Quiz marked as completed with a perfect score.");
   };
-  
+
   if (!currentUser && !loading && !studyLoading) {
     return (
-      <div className="hp-page">
-        <div className="hp-unauthenticated">
+      <div className="hp-page" role="main" aria-label="History page">
+        <div className="hp-unauthenticated" role="alert">
           <p>Please sign in to view your content history.</p>
         </div>
       </div>
@@ -260,14 +276,38 @@ export default function HistoryPage() {
   }
 
   return (
-    <div className="hp-page">
+    <main className="hp-page" aria-label="Your history and activity">
+
+      {/* Visually hidden live region for dynamic announcements */}
+      <div
+        ref={liveRef}
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        style={{ position: "absolute", width: "1px", height: "1px", overflow: "hidden", clip: "rect(0,0,0,0)", whiteSpace: "nowrap" }}
+      />
+
+      <img
+        src={welcomeBanner}
+        alt="Bienvenidos a su Casa de Español"
+        style={{ width: "100%", borderRadius: "30px", display: "block", marginBottom: "-110px", marginTop: "-100px" }}
+      />
 
       {/* ── GROUP STUDY SESSIONS ── */}
-      <div className="hp-section">
+      <section className="hp-section" aria-labelledby="study-sessions-heading">
         <div className="hp-section-header hp-section-header--study">
-          <span className="hp-section-title">GROUP STUDY SESSIONS</span>
+          <h2 id="study-sessions-heading" className="hp-section-title">GROUP STUDY SESSIONS</h2>
           {!studyLoading && (
-            <span className="hp-section-count">
+            <span
+              className="hp-section-count"
+              aria-live="polite"
+              aria-atomic="true"
+              aria-label={`${studySessions.filter(s =>
+                studyFilter === "all" ? true :
+                studyFilter === "upcoming" ? !isPast(s.scheduled_at) :
+                isPast(s.scheduled_at)
+              ).length} sessions shown`}
+            >
               {studySessions.filter(s =>
                 studyFilter === "all" ? true :
                 studyFilter === "upcoming" ? !isPast(s.scheduled_at) :
@@ -278,12 +318,21 @@ export default function HistoryPage() {
         </div>
 
         {/* Filter toggle pills */}
-        <div className="hp-study-filter-bar">
+        <div
+          className="hp-study-filter-bar"
+          role="group"
+          aria-label="Filter study sessions by time"
+        >
           {["upcoming", "past", "all"].map((f) => (
             <button
               key={f}
               className={`hp-study-filter-chip ${studyFilter === f ? "active" : ""}`}
-              onClick={() => setStudyFilter(f)}
+              onClick={() => {
+                setStudyFilter(f);
+                announce(`Showing ${f} study sessions.`);
+              }}
+              aria-pressed={studyFilter === f}
+              aria-label={`Show ${f} study sessions`}
             >
               {f === "upcoming" ? "🟠 Upcoming" : f === "past" ? "📁 Past" : "All"}
             </button>
@@ -291,7 +340,9 @@ export default function HistoryPage() {
         </div>
 
         {studyLoading ? (
-          <div className="hp-loading"><div className="hp-spinner" /></div>
+          <div className="hp-loading" role="status" aria-label="Loading study sessions">
+            <div className="hp-spinner" aria-hidden="true" />
+          </div>
         ) : (() => {
           const filtered = studySessions.filter(s =>
             studyFilter === "all" ? true :
@@ -299,117 +350,166 @@ export default function HistoryPage() {
             isPast(s.scheduled_at)
           );
           return filtered.length === 0 ? (
-            <p className="hp-empty-text">
+            <p className="hp-empty-text" role="status">
               {studySessions.length === 0
                 ? "No study sessions yet. Create or join one from the Group Study page!"
                 : `No ${studyFilter} sessions.`}
             </p>
           ) : (
-            <div className="hp-study-grid">
+            <div
+              className="hp-study-grid"
+              role="list"
+              aria-label={`${studyFilter} study sessions`}
+            >
               {filtered.map((s) => (
-                <StudySessionCard key={s.id} session={s} isOwner={s.isOwner} />
+                <div role="listitem" key={s.id}>
+                  <StudySessionCard session={s} isOwner={s.isOwner} />
+                </div>
               ))}
             </div>
           );
         })()}
-      </div>
+      </section>
 
       {/* ── MY CONTENT ── */}
-      <div className="hp-section">
+      <section className="hp-section" aria-labelledby="my-content-heading">
         <div className="hp-section-header">
-          <span className="hp-section-title">MY CONTENT</span>
+          <h2 id="my-content-heading" className="hp-section-title">MY CONTENT</h2>
           {!loading && (
-            <span className="hp-section-count">{myContent.length} item{myContent.length !== 1 ? "s" : ""}</span>
+            <span
+              className="hp-section-count"
+              aria-label={`${myContent.length} item${myContent.length !== 1 ? "s" : ""} uploaded`}
+            >
+              {myContent.length} item{myContent.length !== 1 ? "s" : ""}
+            </span>
           )}
         </div>
 
         {loading ? (
-          <div className="hp-loading"><div className="hp-spinner" /></div>
+          <div className="hp-loading" role="status" aria-label="Loading your content">
+            <div className="hp-spinner" aria-hidden="true" />
+          </div>
         ) : myContent.length === 0 ? (
-          <p className="hp-empty-text">You haven't uploaded anything yet.</p>
+          <p className="hp-empty-text" role="status">You haven't uploaded anything yet.</p>
         ) : (
-          <div className="hp-cards-grid">
+          <div
+            className="hp-cards-grid"
+            role="list"
+            aria-label={`Your uploaded resources, ${myContent.length} item${myContent.length !== 1 ? "s" : ""}`}
+          >
             {myContent.map((r) => (
-              <ResourceCard
-                key={r.id}
-                resource={{ ...r, author_username: "me" }}
-                currentUser={currentUser}
-                onVote={handleVote}
-                onSave={handleSave}
-                onClick={setSelectedResource}
-              />
+              <div role="listitem" key={r.id}>
+                <ResourceCard
+                  resource={{ ...r, author_username: "me" }}
+                  currentUser={currentUser}
+                  onVote={handleVote}
+                  onSave={handleSave}
+                  onClick={setSelectedResource}
+                />
+              </div>
             ))}
           </div>
         )}
-      </div>
+      </section>
 
       {/* ── SAVED CONTENT ── */}
-      <div className="hp-section">
+      <section className="hp-section" aria-labelledby="saved-content-heading">
         <div className="hp-section-header">
-          <span className="hp-section-title">SAVED CONTENT</span>
+          <h2 id="saved-content-heading" className="hp-section-title">SAVED CONTENT</h2>
           {!loading && (
-            <span className="hp-section-count">{savedContent.length} item{savedContent.length !== 1 ? "s" : ""}</span>
+            <span
+              className="hp-section-count"
+              aria-label={`${savedContent.length} saved item${savedContent.length !== 1 ? "s" : ""}`}
+            >
+              {savedContent.length} item{savedContent.length !== 1 ? "s" : ""}
+            </span>
           )}
         </div>
 
         {loading ? (
-          <div className="hp-loading"><div className="hp-spinner" /></div>
+          <div className="hp-loading" role="status" aria-label="Loading saved content">
+            <div className="hp-spinner" aria-hidden="true" />
+          </div>
         ) : savedContent.length === 0 ? (
-          <p className="hp-empty-text">No saved resources yet. Bookmark items from the Resources page!</p>
+          <p className="hp-empty-text" role="status">
+            No saved resources yet. Bookmark items from the Resources page!
+          </p>
         ) : (
-          <div className="hp-cards-grid">
+          <div
+            className="hp-cards-grid"
+            role="list"
+            aria-label={`Saved resources, ${savedContent.length} item${savedContent.length !== 1 ? "s" : ""}`}
+          >
             {savedContent.map((r) => (
-              <ResourceCard
-                key={r.id}
-                resource={r}
-                currentUser={currentUser}
-                onVote={handleVote}
-                onSave={handleSave}
-                onClick={setSelectedResource}
-              />
+              <div role="listitem" key={r.id}>
+                <ResourceCard
+                  resource={r}
+                  currentUser={currentUser}
+                  onVote={handleVote}
+                  onSave={handleSave}
+                  onClick={setSelectedResource}
+                />
+              </div>
             ))}
           </div>
         )}
-      </div>
+      </section>
 
       {/* ── COMPLETED QUIZZES ── */}
-      <div className="hp-section">
+      <section className="hp-section" aria-labelledby="completed-quizzes-heading">
         <div className="hp-section-header">
-          <span className="hp-section-title">COMPLETED QUIZZES</span>
+          <h2 id="completed-quizzes-heading" className="hp-section-title">
+            COMPLETED QUIZZES (PERFECT SCORES)
+          </h2>
           {!loading && (
-            <span className="hp-section-count">
+            <span
+              className="hp-section-count"
+              aria-label={`${completedQuizzes.length} completed quiz${completedQuizzes.length !== 1 ? "zes" : ""}`}
+            >
               {completedQuizzes.length} quiz{completedQuizzes.length !== 1 ? "zes" : ""}
             </span>
           )}
         </div>
 
         {loading ? (
-          <div className="hp-loading"><div className="hp-spinner" /></div>
+          <div className="hp-loading" role="status" aria-label="Loading completed quizzes">
+            <div className="hp-spinner" aria-hidden="true" />
+          </div>
         ) : completedQuizzes.length === 0 ? (
-          <p className="hp-empty-text">No completed quizzes yet — get a perfect score to earn one!</p>
+          <p className="hp-empty-text" role="status">
+            No completed quizzes yet — get a perfect score to earn one!
+          </p>
         ) : (
-          <div className="hp-cards-grid">
+          <div
+            className="hp-cards-grid"
+            role="list"
+            aria-label={`Completed quizzes with perfect scores, ${completedQuizzes.length} quiz${completedQuizzes.length !== 1 ? "zes" : ""}`}
+          >
             {completedQuizzes.map((r) => (
-              <ResourceCard
-                key={r.id}
-                resource={r}
-                currentUser={currentUser}
-                onVote={handleVote}
-                onSave={handleSave}
-                onClick={setSelectedResource}
-              />
+              <div role="listitem" key={r.id}>
+                <ResourceCard
+                  resource={r}
+                  currentUser={currentUser}
+                  onVote={handleVote}
+                  onSave={handleSave}
+                  onClick={setSelectedResource}
+                />
+              </div>
             ))}
           </div>
         )}
-      </div>
+      </section>
 
       {selectedResource && (
         <ResourceDetailModal
           resource={selectedResource}
-          onClose={() => setSelectedResource(null)}
+          onClose={() => {
+            setSelectedResource(null);
+            announce("Resource detail closed.");
+          }}
           onPerfectScore={handlePerfectScore}
         />
       )}
-    </div>
+    </main>
   );
 }

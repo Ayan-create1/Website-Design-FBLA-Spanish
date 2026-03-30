@@ -22,6 +22,20 @@ export default function ResourcesPage() {
   const [drafts, setDrafts] = useState([]);
   const [draftsOpen, setDraftsOpen] = useState(false);
 
+  const handlePerfectScore = async (resourceId) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+  
+    await supabase.from("completed_quizzes").upsert(
+      {
+        user_id: user.id,
+        resource_id: resourceId,
+        completed_at: new Date().toISOString(),
+      },
+      { onConflict: "user_id,resource_id" }
+    );
+  };
+
   // Get current user
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setCurrentUser(data?.user));
@@ -334,6 +348,7 @@ export default function ResourcesPage() {
               ? (r) => { setSelectedResource(null); setEditingDraft(r); setShowQuizBuilder(true); }
               : null
           }
+          onPerfectScore={handlePerfectScore}
         />
       )}
  

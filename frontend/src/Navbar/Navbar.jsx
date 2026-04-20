@@ -51,7 +51,7 @@ const Navbar = () => {
       
     {/* Desktop icons */}
     <div className="navbar-right">
-      <a href="/info" className="user-icon"><Info size={28} /></a>
+      <a href="/info" className="user-icon"><Settings size={28} /></a>
       <a className="user-icon" onClick={handleLogout}>
         <LogOut size={28} />
       </a>
@@ -76,7 +76,7 @@ const Navbar = () => {
         ))}
       </div>
       <div className="mobile-icons">
-        <a href="/info" className="user-icon"><Info size={28} /></a>
+        <a href="/info" className="user-icon"><Settings size={28} /></a>
         <a className="user-icon" onClick={handleLogout}>
           <LogOut size={28} />
         </a>

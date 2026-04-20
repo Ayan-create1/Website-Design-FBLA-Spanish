@@ -17,16 +17,40 @@ import GroupStudyPage from './pages/GSP';
 import HistoryPage from './pages/History';
 import ResourcesPage from './pages/Resources';
 import GoogleAnalyticsTracker from './GoogleAnalyticsTracker';
-
+import { useEffect, useRef } from 'react';
+import music from './assets/music.mp3';
 function Layout() {
   const { user } = useAuth();
   const location = useLocation();
+  const audioRef = useRef(null);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    audio.volume = 0.3;
+    const startMusic = () => {
+      audio.play();
+      document.removeEventListener('click', startMusic);
+      document.removeEventListener('keydown', startMusic);
+      document.removeEventListener('touchstart', startMusic);
+    };
+    
+    document.addEventListener('click', startMusic);
+    document.addEventListener('keydown', startMusic);
+    document.addEventListener('touchstart', startMusic);
+
+    return () => {
+      document.removeEventListener('click', startMusic);
+      document.removeEventListener('keydown', startMusic);
+      document.removeEventListener('touchstart', startMusic);
+    };
+  }, []);
 
   const authRoutes = ['/', '/register', '/signin'];
   const isAuthPage = authRoutes.includes(location.pathname);
 
   return (
     <>
+      <audio ref={audioRef} src={music} loop />
       {user && !isAuthPage && <Navbar />}
       {user && !isAuthPage && <SombreroDogChatbot />}
       <Routes>

@@ -81,10 +81,13 @@ const styles = `
     padding: 11px 22px;
     border-radius: 8px;
     font-size: 14px;
-    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.18s ease;
     border: none;
+    letter-spacing: normal;
+
   }
   .gsp-btn-primary {letter-spacing: normal; background: #d4895c; color: #fff; font-family: 'DM Sans', sans-serif; font-weight: 600}
   .gsp-btn-primary:hover { background: #faf2ed; transform: translateY(-1px); color: #111}
@@ -134,7 +137,7 @@ const styles = `
     animation: slideUp 0.25s cubic-bezier(0.34,1.56,0.64,1);
   }
   @keyframes slideUp { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-  .gsp-modal-title { font-size: 26px; margin-bottom: 6px; }
+  .gsp-modal-title {font-size: 26px; font-weight: 700; margin-bottom: 6px; }
   .gsp-modal-sub { font-size: 13px; color: #888; margin-bottom: 28px; }
 
   /* ── Form ── */
@@ -305,7 +308,6 @@ function CreateModal({ onClose, onCreated, user }) {
           <label className="gsp-label">Google Meet Link</label>
           <input className="gsp-input" placeholder="https://meet.google.com/xxx-yyyy-zzz" value={form.meet_link} onChange={set("meet_link")} />
         </div>
-
         <div className="gsp-modal-footer">
           <button className="gsp-btn gsp-btn-ghost" style={{ flex: 1 }} onClick={onClose}>Cancel</button>
           <button className="gsp-btn gsp-btn-primary" style={{ flex: 2 }} onClick={handleSubmit} disabled={loading}>
@@ -356,7 +358,7 @@ function RegisterModal({ session, onClose, user, onRegistered }) {
           <>
             <div className="gsp-modal-title">Join Session</div>
             <div className="gsp-modal-sub">{formatDate(session.scheduled_at)}</div>
-            <div style={{ fontFamily: inherit, fontSize: 20, margin: "16px 0 8px" }}>
+            <div style={{ fontSize: 20, margin: "16px 0 8px" }}>
               {session.title}
             </div>
             {session.description && (

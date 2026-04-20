@@ -52,13 +52,14 @@ PAGES:
 - Settings Page: Customize your experience
 
 FEATURES:
-- All resources can be made public (everyone sees) or private (only you see)
-- Resources have cards showing: name, author, topic, and action buttons
-- Quizzes show number of questions and have a "Start" button
-- PDFs have a "Download" button
-- Videos have thumbnails and "Download" button
-- You can report any inappropriate content
-- Track how many times you've played each game
+- The home page allows users to view upcoming group study session opportunities, saved and created content as well as completed quizes
+- Group study page allows users to join upcoming study sessions and make their own tutoring sessions
+- To make a group study session, users can click the new session form and fill it out. They will need a Google Meet link pasted
+- On the activities page, users can play practice tense conjugation word search and vocabulary crossword. All answers here are in Spanish
+- With the actitivies page, users can view total plays, best time, times played in a week, and best time in the week on wordsearch and crossword
+- On the resources page, users can upload quizzes and pdfs publicly or individually to help others learn
+- They can like or dislike uploaded resources and save them to the dashboard. There is also a search bar for users to filter content
+- This website uses Supabase authentication with email as username
 
 2. SPANISH LANGUAGE HELP:
 Answer questions about Spanish grammar, vocabulary, conjugation, culture, etc.
@@ -131,7 +132,9 @@ Be friendly, encouraging, and use some Spanish phrases naturally. Keep responses
     //"How do I upload a quiz?",
     //"Where are the games?",
     //"How do I make resources private?",
-    "Show me Spanish verb conjugations"
+    "Show me Spanish verb conjugations",
+    "How do I navigate the website?",
+
   ];
 
   const handleQuickAction = (action) => {
